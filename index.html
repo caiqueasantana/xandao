@@ -32,16 +32,22 @@
   <script>
     async function verificarHorario() {
       try {
-        const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
+        // Troque abaixo pela sua chave gratuita da API Ninjas
+        const apiKey = "SUA_CHAVE_AQUI"; // pegue grátis em https://api-ninjas.com/profile
+        const response = await fetch("https://api.api-ninjas.com/v1/worldtime?city=Brasilia", {
+          headers: { 'X-Api-Key': apiKey }
+        });
         const data = await response.json();
-        const date = new Date(data.datetime);
-        const hora = date.getHours();
+
+        const horaStr = data.hour;
+        const minutoStr = data.minute;
+        const hora = parseInt(horaStr);
 
         const mensagem = document.getElementById("mensagem");
         const horaElem = document.getElementById("hora");
         const card = document.getElementById("card");
 
-        horaElem.textContent = "Horário atual de Brasília: " + date.toLocaleTimeString("pt-BR");
+        horaElem.textContent = `Horário atual de Brasília: ${horaStr.padStart(2, '0')}:${minutoStr.padStart(2, '0')}`;
 
         if (hora >= 19 || hora < 6) {
           mensagem.innerHTML = "🔴 <strong class='text-red-300'>Bolsonaro não pode sair na rua até as 6h da manhã.</strong>";
