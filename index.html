@@ -30,40 +30,34 @@
   </div>
 
   <script>
-    async function verificarHorario() {
-      try {
-        // Troque abaixo pela sua chave gratuita da API Ninjas
-        const apiKey = "SUA_CHAVE_AQUI"; // pegue grátis em https://api-ninjas.com/profile
-        const response = await fetch("https://api.api-ninjas.com/v1/worldtime?city=Brasilia", {
-          headers: { 'X-Api-Key': apiKey }
-        });
-        const data = await response.json();
+    function verificarHorarioLocalBrasilia() {
+      const agora = new Date();
 
-        const horaStr = data.hour;
-        const minutoStr = data.minute;
-        const hora = parseInt(horaStr);
+      // Corrige fuso para UTC-3 manualmente
+      const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
+      const brasilia = new Date(utc - (3 * 60 * 60 * 1000));
 
-        const mensagem = document.getElementById("mensagem");
-        const horaElem = document.getElementById("hora");
-        const card = document.getElementById("card");
+      const hora = brasilia.getHours();
+      const minutos = brasilia.getMinutes().toString().padStart(2, '0');
 
-        horaElem.textContent = `Horário atual de Brasília: ${horaStr.padStart(2, '0')}:${minutoStr.padStart(2, '0')}`;
+      const mensagem = document.getElementById("mensagem");
+      const horaElem = document.getElementById("hora");
+      const card = document.getElementById("card");
 
-        if (hora >= 19 || hora < 6) {
-          mensagem.innerHTML = "🔴 <strong class='text-red-300'>Bolsonaro não pode sair na rua até as 6h da manhã.</strong>";
-          card.classList.add("bg-red-900/70", "border-red-500");
-          card.classList.remove("bg-green-900/70", "border-green-500");
-        } else {
-          mensagem.innerHTML = "🟢 <strong class='text-green-300'>Bolsonaro pode sair na rua.</strong>";
-          card.classList.add("bg-green-900/70", "border-green-500");
-          card.classList.remove("bg-red-900/70", "border-red-500");
-        }
-      } catch (error) {
-        document.getElementById("mensagem").textContent = "❌ Erro ao buscar horário.";
+      horaElem.textContent = `Horário de Brasília: ${hora.toString().padStart(2, '0')}:${minutos}`;
+
+      if (hora >= 19 || hora < 6) {
+        mensagem.innerHTML = "🔴 <strong class='text-red-300'>Bolsonaro não pode sair na rua até amanhã.</strong>";
+        card.classList.add("bg-red-900/70", "border-red-500");
+        card.classList.remove("bg-green-900/70", "border-green-500");
+      } else {
+        mensagem.innerHTML = "🟢 <strong class='text-green-300'>Bolsonaro pode sair na rua.</strong>";
+        card.classList.add("bg-green-900/70", "border-green-500");
+        card.classList.remove("bg-red-900/70", "border-red-500");
       }
     }
 
-    verificarHorario();
+    verificarHorarioLocalBrasilia();
   </script>
 </body>
 </html>
